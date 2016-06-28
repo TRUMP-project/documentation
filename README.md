@@ -1,7 +1,14 @@
 # documentation
 Documentation and weekly status reports 
 
+
 # week2
+
+- Meeting at the DataLab and presentation preparation
+- ADS research assistant presentation + QBer tutorial
+- data search
+
+# week3
 
 -Creation of a file (to be uploaded) summing up the databases found until now, with the kind on data available, the period, population data level etc.
 -Edited the presentation with the logos of the ISSH and VU.
