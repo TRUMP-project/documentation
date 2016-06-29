@@ -11,5 +11,4 @@ Documentation and weekly status reports
 # week3
 
 - databases list
-- 
 
