@@ -12,3 +12,6 @@ Documentation and weekly status reports
 
 - databases list
 
+# week 4
+
+- new research question(s) based on the data available so far
