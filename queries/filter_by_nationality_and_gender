@@ -1,0 +1,22 @@
+﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX trumpvoc: <http://localhost:5820/test/vocab/>
+PREFIX trumpres: <http://localhost:5820/test/resources/>
+PREFIX sdmx: <http://purl.org/linked-data/sdmx/2009/code#>
+
+select distinct ?asylum_seekers ?nationality ?value ?date ?country ?gender
+where { 
+	?asylum_seekers a trumpvoc:Asylum_seekers .
+  	?asylum_seekers trumpvoc:nationality ?nationality .
+  	?asylum_seekers trumpvoc:value ?value .
+  	?asylum_seekers trumpvoc:application_period ?date .
+  	?asylum_seekers trumpvoc:application_country ?country .
+  	?asylum_seekers trumpvoc:gender ?gender .
+ 
+    FILTER(regex(str(?nationality), "Afghaans" ))
+  	FILTER(?gender = sdmx:sex-M)
+  
+}order by(?date)
