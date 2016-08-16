@@ -13,3 +13,6 @@ http://yasgui.org/
    
 Stardog admin: 
 http://stardog.clariah-sdh.eculture.labs.vu.nl/
+
+Bind N/A to 0 (integer) for visualisation: 
+BIND(if((regex(str(?personal_remittances_paid), "N/A")), "0"^^xsd:integer, ?personal_remittances_paid) as ?result) .
