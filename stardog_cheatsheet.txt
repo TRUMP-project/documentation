@@ -1,0 +1,18 @@
+Stardog web query interface: 
+http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query 
+=> Reasoning needs to be switched ON! 
+
+Yasgui: 
+http://yasgui.org/
+=> enpoint: http://stardog.clariah-sdh.eculture.labs.vu.nl/test/query/
+=> Configure Request: 
+   - click on the "burger" menu left of the endpoint 
+   - set Request Method to POST 
+   - enter URL Argument reasoning true 
+   -> should work 
+   
+Stardog admin: 
+http://stardog.clariah-sdh.eculture.labs.vu.nl/
+
+Bind N/A to 0 (integer) for visualisation: 
+BIND(if((regex(str(?personal_remittances_paid), "N/A")), "0"^^xsd:integer, ?personal_remittances_paid) as ?result) .
