@@ -1,0 +1,15 @@
+Stardog web query interface: 
+http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query 
+=> Reasoning needs to be switched ON! 
+
+Yasgui: 
+http://yasgui.org/
+=> enpoint: http://stardog.clariah-sdh.eculture.labs.vu.nl/test/query/
+=> Configure Request: 
+   - click on the "burger" menu left of the endpoint 
+   - set Request Method to POST 
+   - enter URL Argument reasoning true 
+   -> should work 
+   
+Stardog admin: 
+http://stardog.clariah-sdh.eculture.labs.vu.nl/
