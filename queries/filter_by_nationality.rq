@@ -1,3 +1,6 @@
+# This query returns groups of asylum seekers who have a specific nationality ( in the specific example Soedanees ).
+# Nationalities have to be in dutch
+
 ﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>

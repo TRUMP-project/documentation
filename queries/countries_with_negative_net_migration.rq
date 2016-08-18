@@ -1,4 +1,7 @@
-﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+﻿# This query returns all countries that have a negative migration value, along with their other "attributes"
+# such as international_migrant_stock etc.
+
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
