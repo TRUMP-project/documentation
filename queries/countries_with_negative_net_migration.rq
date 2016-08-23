@@ -1,5 +1,6 @@
 ﻿# This query returns all countries that have a negative migration value, along with their other "attributes"
 # such as international_migrant_stock etc.
+#+ endpoint: http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query
 
 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix owl: <http://www.w3.org/2002/07/owl#>

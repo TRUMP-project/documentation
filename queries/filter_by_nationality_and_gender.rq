@@ -1,5 +1,6 @@
 # This query returns groups of asylum seekers and their respected "attributes" filtered by nationality & gender, 
 # gender can be changed to female by changing the M to F (male to female).
+#+ endpoint: http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query
 
 ﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
