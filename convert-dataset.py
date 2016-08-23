@@ -1,8 +1,10 @@
+# coding=utf-8
 import csv
 from csv import DictReader
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import locale
 from rdflib import Dataset, Graph, URIRef, Literal, Namespace, RDF, RDFS, OWL, XSD
 from iribaker import to_iri
 import requests
@@ -23,6 +25,7 @@ dbo = 'http://dbpedia.org/ontology/'
 DBO = Namespace(dbo)
 dbr = 'http://dbpedia.org/resource/'
 DBR = Namespace(dbr)
+prov= 'http://www.w3.org/ns/prov#'
 
 repo_url = "http://localhost:5820/test"
 
@@ -30,11 +33,11 @@ VOCAB_FILE = 'ontologies/version_V1.0.ttl'
 SOURCE_DATA_DIR = '../source_datasets/'
 OUTPUT_DIR = 'data/'
 
-def convert_csv(path, dataset):
+def convert_csv(path, dataset, graph_uri):
     with open(path,'r') as csvfile:
         csv_contents = csv_parser(filename)
 
-        graph_uri = URIRef('http://localhost:5820/test/resource/myGraph')  # The URI for our graph
+        graph_uri = URIRef('http://localhost:5820/test/resource/movement_graph')  # The URI for our graph
         graph = dataset.graph(graph_uri)                                   # new graph object with our URI from the dataset
 
         for row in csv_contents[2:]:
@@ -136,6 +139,33 @@ def convert_csv(path, dataset):
             dataset.add((personal_remittances_paid,VOCAB['value'],personal_remittances_paid_value))
             dataset.add((personal_remittances_received, VOCAB['year'], Literal('2014', datatype=XSD['gYear'])))
 
+    info = u'FrÃ©dÃ©ric Docquier, B. Lindsay Lowell, and Abdeslam Marfouk'+'s' +', "A Gendered Assessment of Highly Skilled Emigration" (2009)'.decode('utf-8')
+
+    graph.add((VOCAB['net_migration'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal('United Nations Population Division, World Population Prospects', datatype=XSD['string'])))
+
+    graph.add((VOCAB['international_migrant_stock'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal('United Nations Population Division, Trends in Total Migrant Stock: 2012 Revision.', datatype=XSD['string'])))
+
+    graph.add((VOCAB['tetriary_educated_emigration'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal(info, datatype=XSD['string'])))
+
+    graph.add((VOCAB['refugees_by_country_of_origin'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal('United Nations High Commissioner for Refugees (UNHCR), Statistical Yearbook and data files, \
+    complemented by statistics on Palestinian refugees under the mandate of the UNRWA as published on its website.\
+    Data from UNHCR are available online at: www.unhcr.org/statistics/populationdatabase.', datatype=XSD['string'])))
+
+    graph.add((VOCAB['refugees_by_country_of_asylum'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal('United Nations High Commissioner for Refugees (UNHCR), Statistical Yearbook and data files, \
+    complemented by statistics on Palestinian refugees under the mandate of the UNRWA as published on its website. \
+    Data from UNHCR are available online at: www.unhcr.org/statistics/populationdatabase.', datatype=XSD['string'])))
+
+    graph.add((VOCAB['personal_remittances_received'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal('World Bank staff estimates based on IMF balance of payments data.', datatype=XSD['string'])))
+
+    graph.add((VOCAB['personal_remittances_paid'], URIRef(to_iri(prov + 'wasDerivedFrom')),
+    Literal('World Bank staff estimates based on IMF balance of payments data.', datatype=XSD['string'])))
+
     return dataset, graph
 
 def serialize_upload(filename, dataset, upload=True):
@@ -161,6 +191,8 @@ def csv_parser(filename):
     return csv_contents
 #//*************** csv parser ****************//#
 
+graph_uri_base = resource + 'movement_of_people/'
+
 
 path = 'source_datasets/'
 filename = 'Movement_of_people_across_borders_dataset.csv'
@@ -174,5 +206,33 @@ dataset.bind('dbr', DBR)
 
 dataset.default_context.parse(VOCAB_FILE, format='turtle')
 
-dataset, t_graph = convert_csv(path + filename,dataset)
+dataset, movement_graph = convert_csv(path + filename,dataset,URIRef(graph_uri_base + 'movement_graph'))
 serialize_upload(OUTPUT_DIR + 'movement_of_people.trig',dataset)
+
+
+
+### Generate VoID metadata
+from rdflib.void import generateVoID
+from rdflib.namespace import VOID
+dcterms_uri = 'http://purl.org/dc/terms/'
+DCTERMS = Namespace(dcterms_uri)
+
+# Movement of people
+void_dataset_movement = URIRef(graph_uri_base + 'void')
+void_g_movement, _ = generateVoID(movement_graph, dataset=void_dataset_movement)
+serialize_upload(OUTPUT_DIR + 'void_movement.trig', void_g_movement)
+
+# Generate linked dataset
+void_linked_ds = URIRef(graph_uri_base + 'void')
+void_linked_g = Graph()
+void_linked_g.add((void_linked_ds, RDF.type, VOID.Linkset))
+void_linked_g.add((void_linked_ds, VOID.target, void_dataset_movement))
+void_linked_g.add((void_linked_ds, VOID.sparqlEndpoint, URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query')))
+void_linked_g.add((void_linked_ds, DCTERMS['license'], URIRef('http://creativecommons.org/publicdomain/zero/1.0/')))
+void_linked_g.add((void_linked_ds, DCTERMS['subject'], DBR['Movement_of_people']))
+void_linked_g.add((void_linked_ds, DCTERMS['title'], Literal('The unified migration portal, movement of people')))
+void_linked_g.add((void_linked_ds, DCTERMS['source'], URIRef('http://worldbank.org/')))
+void_linked_g.add((void_linked_ds, DCTERMS['description'],
+    Literal('A linked dataset on migration, movement of people across countries and asylum seekers specifically in the Netherlands', lang='en')))
+void_linked_g.add((void_linked_ds, VOID.exampleResource, VOCAB['Country']))
+serialize_upload(OUTPUT_DIR + 'void_linked.trig', void_linked_g)

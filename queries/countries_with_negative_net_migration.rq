@@ -15,7 +15,7 @@ where {
   	graph ?g{
 	?country a dbo:Country .
     ?country rdfs:label ?label .
-	?country trumpvoc:net_migration ?net_migration .
+    ?country trumpvoc:net_migration ?net_migration .
     ?country trumpvoc:international_migrant_stock ?ims .
     ?country trumpvoc:emmigration_rate_to_OECD ?ert_OECD_percentage .
     ?country trumpvoc:personal_remittances_paid ?prp .

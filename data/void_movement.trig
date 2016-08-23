@@ -1,0 +1,125 @@
+@prefix ns1: <http://rdfs.org/ns/void#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:N5fa650e4d5e846f09416d65a913c5ac4 {
+    <http://localhost:5820/test/resource/movement_of_people/void> a ns1:Dataset ;
+        ns1:classPartition <http://localhost:5820/test/resource/movement_of_people/void_class0> ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 1193 ;
+        ns1:distinctSubjects 233 ;
+        ns1:properties 10 ;
+        ns1:propertyPartition <http://localhost:5820/test/resource/movement_of_people/void_property0>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property1>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property2>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property3>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property4>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property5>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property6>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property7>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property8>,
+            <http://localhost:5820/test/resource/movement_of_people/void_property9> ;
+        ns1:triples 2041 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_class0> a ns1:Dataset ;
+        ns1:class <http://localhost:5820/test/vocab/Country> ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 1187 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 9 ;
+        ns1:triples 2034 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property0> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 182 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/personal_remittances_received> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property1> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 118 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/refugees_by_country_of_asylum> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property2> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 1 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property rdf:type ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property3> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 159 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/emmigration_rate_to_OECD> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property4> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 144 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/net_migration> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property5> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 226 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property rdfs:label ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property6> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 163 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/personal_remittances_paid> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property7> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 95 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/refugees_by_country_of_origin> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property8> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 182 ;
+        ns1:distinctSubjects 226 ;
+        ns1:entities 226 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/international_migrant_stock> ;
+        ns1:triples 226 .
+
+    <http://localhost:5820/test/resource/movement_of_people/void_property9> a ns1:Dataset ;
+        ns1:classes 0 ;
+        ns1:distinctObjects 6 ;
+        ns1:distinctSubjects 7 ;
+        ns1:entities 0 ;
+        ns1:properties 1 ;
+        ns1:property <http://www.w3.org/ns/prov#wasDerivedFrom> ;
+        ns1:triples 7 .
+}
+
