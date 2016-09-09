@@ -1,0 +1,45 @@
+@prefix ns1: <http://rdfs.org/ns/void#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:Nb46abaf66d504dc9842fb29d82cdf627 {
+    <http://localhost:5820/test/resource/asylum_seekers/void> a ns1:Dataset ;
+        ns1:classPartition <http://localhost:5820/test/resource/asylum_seekers/void_class0> ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 2436 ;
+        ns1:distinctSubjects 1 ;
+        ns1:properties 2 ;
+        ns1:propertyPartition <http://localhost:5820/test/resource/asylum_seekers/void_property0>,
+            <http://localhost:5820/test/resource/asylum_seekers/void_property1> ;
+        ns1:triples 2436 .
+
+    <http://localhost:5820/test/resource/asylum_seekers/void_class0> a ns1:Dataset ;
+        ns1:class <http://localhost:5820/test/vocab/Country> ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 2436 ;
+        ns1:distinctSubjects 1 ;
+        ns1:entities 1 ;
+        ns1:properties 2 ;
+        ns1:triples 2436 .
+
+    <http://localhost:5820/test/resource/asylum_seekers/void_property0> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 1 ;
+        ns1:distinctSubjects 1 ;
+        ns1:entities 1 ;
+        ns1:properties 1 ;
+        ns1:property rdf:type ;
+        ns1:triples 1 .
+
+    <http://localhost:5820/test/resource/asylum_seekers/void_property1> a ns1:Dataset ;
+        ns1:classes 1 ;
+        ns1:distinctObjects 2435 ;
+        ns1:distinctSubjects 1 ;
+        ns1:entities 1 ;
+        ns1:properties 1 ;
+        ns1:property <http://localhost:5820/test/vocab/asylum_seekers> ;
+        ns1:triples 2435 .
+}
+

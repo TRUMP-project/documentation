@@ -1,0 +1,19 @@
+@prefix ns1: <http://rdfs.org/ns/void#> .
+@prefix ns2: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:Ne7f4d1b38546437eae2ac1d47eb22b3f {
+    <http://localhost:5820/test/resource/asylum_seekers/void> a ns1:Linkset ;
+        ns2:description "A linked dataset on migration, movement of people across countries and asylum seekers specifically in the Netherlands"@en ;
+        ns2:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+        ns2:source <https://www.cbs.nl/> ;
+        ns2:subject <http://dbpedia.org/resource/Asylum_seekers> ;
+        ns2:title "The unified migration portal, asylum seekers in the city of Amsterdam" ;
+        ns1:exampleResource <http://localhost:5820/test/vocab/asylum_seekers> ;
+        ns1:sparqlEndpoint <http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query> ;
+        ns1:target <http://localhost:5820/test/resource/asylum_seekers/void> .
+}
+
