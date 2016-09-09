@@ -34,7 +34,7 @@ SOURCE_DATA_DIR = '../source_datasets/'
 OUTPUT_DIR = 'data/'
 
 
-def convert_asylum_csv(path, dataset):
+def convert_asylum_csv(path, dataset, graph_uri):
     with open(path,'r') as csvfile:
         country = URIRef(to_iri(dbr + 'Kingdom of the Netherlands'))
         csv_contents = csv_parser(filename)
@@ -44,7 +44,7 @@ def convert_asylum_csv(path, dataset):
 
         for row in csv_contents[1:]:
             # Pre processing of the data + creation of triples
-            asylum_seeker = URIRef(to_iri(resource + str(enum)))
+            asylum_seeker = URIRef(to_iri(resource + ' Asylum_seekers ' + str(enum)))
             try:
                 gender = row['Geslacht'].strip()
                 if gender == 'Vrouwen':
@@ -120,6 +120,7 @@ def csv_parser(filename):
     return csv_contents
 #//*************** csv parser ****************//#
 
+graph_uri_base = resource + 'asylum_seekers/'
 
 path = 'source_datasets/'
 filename = 'asylum_seekers.csv'
@@ -134,5 +135,32 @@ dataset.bind('sdmx', SDMX)
 
 dataset.default_context.parse(VOCAB_FILE, format='turtle')
 
-dataset, t_graph = convert_asylum_csv(filename,dataset)
+dataset, asylum_graph = convert_asylum_csv(filename,dataset,URIRef(graph_uri_base + 'asylum_graph'))
 serialize_upload(OUTPUT_DIR + 'asylum_seekers.trig',dataset)
+
+
+### Generate VoID metadata
+from rdflib.void import generateVoID
+from rdflib.namespace import VOID
+dcterms_uri = 'http://purl.org/dc/terms/'
+DCTERMS = Namespace(dcterms_uri)
+
+# Asylum seekers
+void_dataset_asylum = URIRef(graph_uri_base + 'void')
+void_g_asylum, _ = generateVoID(asylum_graph, dataset=void_dataset_asylum)
+serialize_upload(OUTPUT_DIR + 'void_asylum.trig', void_g_asylum)
+
+# Generate linked dataset
+void_linked_ds = URIRef(graph_uri_base + 'void')
+void_linked_g = Graph()
+void_linked_g.add((void_linked_ds, RDF.type, VOID.Linkset))
+void_linked_g.add((void_linked_ds, VOID.target, void_dataset_asylum))
+void_linked_g.add((void_linked_ds, VOID.sparqlEndpoint, URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query')))
+void_linked_g.add((void_linked_ds, DCTERMS['license'], URIRef('http://creativecommons.org/publicdomain/zero/1.0/')))
+void_linked_g.add((void_linked_ds, DCTERMS['subject'], DBR['Asylum_seekers']))
+void_linked_g.add((void_linked_ds, DCTERMS['title'], Literal('The unified migration portal, asylum seekers in the city of Amsterdam')))
+void_linked_g.add((void_linked_ds, DCTERMS['source'], URIRef('https://www.cbs.nl/')))
+void_linked_g.add((void_linked_ds, DCTERMS['description'],
+    Literal('A linked dataset on migration, movement of people across countries and asylum seekers specifically in the Netherlands', lang='en')))
+void_linked_g.add((void_linked_ds, VOID.exampleResource, VOCAB['asylum_seekers']))
+serialize_upload(OUTPUT_DIR + 'void_linked_asylum.trig', void_linked_g)
