@@ -1,0 +1,23 @@
+﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+prefix mp: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/>
+prefix trumpres: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/resource/>
+prefix trumpvoc: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/vocab/>
+PREFIX sdmx: <http://purl.org/linked-data/sdmx/2009/code#>
+
+select distinct ?Country ?Unemployment_rate ?Value ?Time_period ?Unit
+where { 
+ 
+	?Unemployment_rate trumpvoc:country ?Country .
+  	?Unemployment_rate trumpvoc:indicator_value ?Value .
+  	?Unemployment_rate trumpvoc:time_period ?Time_period .
+  	?Unemployment_rate trumpvoc:unit ?Unit .
+  
+  	#FILTER(?Unit = 'Total population')
+  	FILTER((?Unit = 'Active population') && (regex(str(?Country), "Greece" )))
+
+  
+}order by(?Time_period)
