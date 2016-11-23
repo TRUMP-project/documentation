@@ -1,0 +1,368 @@
+// Copyright (c) 2010 - 2014 -- Clark & Parsia, LLC. <http://www.clarkparsia.com>
+// For more information about licensing and copyright of this software, please contact
+// inquiries@clarkparsia.com or visit http://stardog.com
+
+package com.complexible.barc.rdf;
+
+import "core.proto";
+import "bigpacket.proto";
+
+option java_outer_classname = "BARC";
+
+// This is default, but it's nice to be explicit
+option optimize_for = SPEED;
+
+////////////////////////////////////////////
+//// Query Protocol
+////////////////////////////////////////////
+
+/**
+ * Request payload for initiating/executing a query on the server
+ * Note:  The default base URI here should match the default provided by Stardog.BASE_URI
+ */
+message QueryRequest {
+	required string				query		= 1;
+	optional BindingSet			bindings	= 2;
+	optional string				baseURI		= 3 [ default = "http://api.stardog.com" ];
+	optional int64				limit		= 4;
+	optional int64				offset		= 5;
+	optional Dataset            dataset     = 6;
+	optional int64				timeout		= 7;
+}
+
+message Dataset {
+	repeated string     defaultGraphs   = 1;
+	repeated string     namedGraphs     = 2;
+	repeated string     removeGraphs    = 3;
+	repeated string     insertGraphs    = 4;
+}
+
+/**
+ * Response for a Boolean query
+ *
+ * @see QueryRequest
+ */
+message AskResult {
+	required bool	result	=	1;
+}
+
+/**
+ * Initial Response for a Tuple (select) query.  This encodes that the query was successfully started and returns the
+ * projection as a list of variable names.  These variable names are to be used for constructing both the resulting
+ * query result (TupleQueryResult) and for decoding LiteBindingSet & CompressedBindingSet objects.
+ *
+ * @see QueryRequest
+ */
+message SelectResult {
+	repeated string			variables	= 1;
+}
+
+/**
+ *
+ * @see QueryRequest
+ */
+message Tuples {
+	repeated LiteBindingSet bindingSets = 1;
+}
+
+/**
+ *
+ */
+message Dictionary {
+	repeated com.complexible.common.protobuf.core.IntStringMapEntry mappings = 1;
+}
+
+/**
+ *
+ * @see Dictionary
+ */
+message CompressedTuples {
+	repeated CompressedBindingSet bindingSets = 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// More protocol Objects
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////
+//// RDF Messages
+////////////////////////////////////////////
+
+extend com.complexible.barc.ConnectionContext {
+	optional string	format	= 2;
+	optional string	named_graph	= 3;
+	optional string compression = 4;
+}
+
+/**
+ * An RDF Statement
+ */
+message Statement {
+	required Resource	subject		= 1;
+	required string		predicate	= 2;
+	required Value		object		= 3;
+	optional Resource	context		= 4;
+}
+
+/**
+ * An RDF Resource, either a BNode or a URI
+ */
+message Resource {
+	enum ResourceType {
+		URI		= 1;
+		BNODE	= 2;
+		NULL	= 3;
+	}
+
+	required string			value	= 1;
+	required ResourceType	type	= 2;
+}
+
+message Value {
+	enum ValueType {
+		URI		= 1;
+		BNODE	= 2;
+		LITERAL	= 3;
+
+		// this is special for cases where we want to send a null value in a list of values
+		// such as in LiteBinding, and there's no way to send null in protobuf, so we'll
+		// make a special Value/ValueType for it
+		NULL	= 4;
+	}
+
+	required string		value		= 1;
+	optional string		lang		= 2;
+	optional string		datatype	= 3;
+	required ValueType	type		= 4;
+}
+
+message Graph {
+	repeated Statement statements	= 1;
+}
+
+//////////////////////////////////////////////////
+// Protobuf records for the Quad format
+//////////////////////////////////////////////////
+
+message LongGraph {
+	repeated LongStatement statements	= 1;
+}
+
+message LongStatement {
+	required int64 subject = 1;
+	required int64 predicate = 2;
+	required int64 object = 3;
+	optional int64 context = 4;
+}
+
+message LongValueEntry {
+	required int64 key = 1;
+	required Value value = 2;
+	//required bytes value = 2;
+}
+
+message MappingDictionary {
+	repeated LongValueEntry entries = 1;
+}
+
+//////////////////////////////////////////////////
+// Protobuf records for the DaisyChain format
+//////////////////////////////////////////////////
+
+message PredicateRecord {
+	required int64	context = 1;
+	required int64	predicate = 2;
+	repeated SubjectRecord subjects = 3;
+}
+
+message SubjectRecord {
+	required int64 subject = 1;
+	repeated int64 objects = 2 [packed=true];
+}
+
+//////////////////////////////////////////////////
+// Protobuf records for the QNP format
+//////////////////////////////////////////////////
+
+message PredicateEntry {
+	required int64	id = 1;
+	required CompressedValue value = 2;
+}
+
+message PredicateDictionary {
+	repeated PredicateEntry entries = 1;
+}
+
+message QNPStatement {
+	extensions 1 to 5;
+}
+
+extend QNPStatement {
+	required CompressedValue	subject		= 1;
+}
+
+extend QNPStatement {
+	required int64				predicate	= 2;
+}
+
+extend QNPStatement {
+	required CompressedValue	object		= 3;
+}
+
+extend QNPStatement {
+	required CompressedValue	context		= 4;
+}
+
+message QNPGraph {
+	repeated QNPStatement statements	= 1;
+}
+
+//////////////////////////////////////////////////
+// Protobuf records for the QNP2 & 3 formats
+// Including custom value compression
+//////////////////////////////////////////////////
+
+/**
+message CQNPStatement {
+	required CQNPValue	subject		= 1;
+	required int64		predicate	= 2;
+	required CQNPValue	object		= 3;
+	optional CQNPValue	context		= 4;
+}
+
+message CQNPGraph {
+	repeated CQNPStatement statements	= 1;
+}
+
+enum CQNPValueType {
+	CQNAME				= 1;
+	CBNODE				= 2;
+	CUNTYPED_LITERAL	= 3;
+	CTYPED_LITERAL		= 4;
+	CLANG_LITERAL		= 5;
+	CNULL				= 6;
+}
+
+message CQNPValue {
+	required CQNPValueType type = 1;
+	extensions 2 to 10;
+}
+
+//uri
+extend CQNPValue {
+	required int32 nsid = 2;
+	optional string name = 3;
+	optional int32 nameid = 7;
+}
+
+//bnode
+extend CQNPValue {
+	required int32 id = 4;
+}
+
+// literal
+extend CQNPValue {
+	required string label = 5;
+}
+
+// lang literal
+extend CQNPValue {
+	required int32 lang = 6;
+}
+
+message QPredicateEntry {
+	required int64	id = 1;
+	required CQNPValue value = 2;
+}
+
+message QPredicateDictionary {
+	repeated QPredicateEntry entries = 1;
+}
+*/
+
+////////////////////////////////////////////
+//// Compressed RDF Messages
+////////////////////////////////////////////
+
+enum CValueType {
+	QNAME			= 1;
+	BNODE			= 2;
+	UNTYPED_LITERAL	= 3;
+	TYPED_LITERAL	= 4;
+	LANG_LITERAL	= 5;
+	NULL			= 6;
+}
+
+message QName {
+	required int32	nsid	= 1;
+	required string	name	= 2;
+}
+
+message BNodeOrLiteral {
+	required string value	= 1;
+}
+
+message LangLiteral {
+	required string value	= 1;
+	required int32 	lang	= 2;
+}
+
+message TypedLiteral {
+	required string value	= 1;
+	required int32	nsid	= 2;
+	required string name 	= 3;
+}
+
+message CompressedValue {
+	required CValueType	type	= 1;
+	required bytes		value	= 2;
+}
+
+message CompressedStatement {
+	required CompressedValue	subject		= 1;
+	required CompressedValue	predicate	= 2;
+	required CompressedValue	object		= 3;
+	optional CompressedValue	context		= 4;
+}
+
+/**
+ *
+ * @see Dictionary
+ */
+message CompressedGraph {
+	repeated CompressedStatement	statements	= 1;
+}
+
+////////////////////////////////////////////
+//// Tuple Query Result Messages
+////////////////////////////////////////////
+
+//// Stand-alone bindings
+
+message Binding {
+	required string	variable	= 1;
+	required Value	value		= 2;
+}
+
+message BindingSet {
+	repeated Binding bindings 	= 1;
+}
+
+//// 'Lite' bindings which are serialized in the order of the projection specified in SelectResult
+
+message LiteBindingSet {
+	repeated Value bindings 	= 1;
+}
+
+//// Compressed Bindings
+
+message CompressedBindingSet {
+	repeated CompressedValue bindings = 1;
+}
+
+message RDFFileReference {
+	required string		name		= 1;
+	required string		format		= 2;
+	required Resource	context		= 3;
+	optional string     compression = 4;
+}

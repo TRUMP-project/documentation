@@ -1,0 +1,58 @@
+// Copyright (c) 2010 - 2013 -- Clark & Parsia, LLC. <http://www.clarkparsia.com>
+// For more information about licensing and copyright of this software, please contact
+// inquiries@clarkparsia.com or visit http://stardog.com
+
+package com.complexible.stardog.protocols.snarl.reasoning;
+
+import "rdf.proto";
+
+option java_outer_classname = "ProofProtocol";
+
+// This is default, but it's nice to be explicit
+option optimize_for = SPEED;
+
+//////////////////////////////////////////////////
+// Protobuf records for the Proof API
+//////////////////////////////////////////////////
+
+message ProofList {
+    repeated Proof 				proofs	 	= 1;
+}
+
+/**
+ * Equivalent to Proof interface
+ */
+message Proof {
+    repeated Proof 				children 	= 1;
+    optional Expression 		expression 	= 2;
+    required ProofNodeStatus 	status 		= 3;
+    repeated com.complexible.barc.rdf.Resource namedGraphs	= 4;
+    optional Proof			 	alternate 	= 5;
+
+    enum ProofNodeStatus {
+            ASSERTED = 1;
+            NOT_ASSERTED = 2;
+            INFERRED = 3;
+            NOT_INFERRED = 4;
+            VIOLATED = 5;
+    }
+}
+
+/**
+ * @see ProofNode
+ */
+message Expression {
+    required com.complexible.barc.rdf.Graph				graph 		= 1;
+}
+
+message ExplanationRequest {
+	enum Type { INCONSISTENCY = 1; INFERENCE = 2; }
+
+	required Type					type		= 1;
+    optional Expression 			expression 	= 2;
+    optional int32					countLimit	= 3;
+    optional int64					timeLimit	= 4;
+    optional bool					computeGraphs = 5;
+    optional bool					mergeProofs = 6;
+    repeated com.complexible.barc.rdf.Resource	activeGraphs = 7; 
+}
