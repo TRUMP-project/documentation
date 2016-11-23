@@ -1,0 +1,33 @@
+﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+prefix mp: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/vocab/>
+prefix trumpres: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/resource/>
+PREFIX sdmx: <http://purl.org/linked-data/sdmx/2009/code#>
+prefix dbr: <http://dbpedia.org/resource/>
+prefix dbo: <http://dbpedia.org/ontology/>
+
+select ?Country ?Label ?Population ?Time_Period ?ValueP ?ValueU where {
+  
+    ?Country a dbo:Country ;
+			 rdfs:label ?Label ;
+			 mp:population ?Population ;
+  			 mp:unemployment_rate ?Unempoyment_rate .
+
+  	filter(?Label = 'Austria')
+  
+  
+  	graph trumpres:population_eu_graph{
+    ?Population mp:time_period ?Time_Period ;
+     		 	mp:population_value ?ValueP .
+    }
+          
+  	graph trumpres:unemployment_eu_graph{
+    ?Unemployment_rate mp:time_period ?Time_Period ;
+     		 	mp:indicator_value ?ValueU .
+    }
+          
+              
+}order by(?Time_Period)
