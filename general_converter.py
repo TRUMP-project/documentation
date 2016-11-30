@@ -11,16 +11,18 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from pprint import pprint
 
 # A namespace for our resources
-resource = 'http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/resource/'
+resource = 'http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/resource/'
 RESOURCE = Namespace(resource)
 
 # A namespace for our vocabulary items (schema information, RDFS, OWL classes and properties etc.)
-vocab = 'http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/vocab/'
+vocab = 'http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/'
 VOCAB = Namespace(vocab)
 
 # The namespaces of external ontologies
 geo = 'http://www.w3.org/2003/01/geo/wgs84_pos#'
 GEO = Namespace(geo)
+geo_country_code = 'http://www.geonames.org/countries/'
+GCC = Namespace(geo_country_code)
 dbo = 'http://dbpedia.org/ontology/'
 DBO = Namespace(dbo)
 dbr = 'http://dbpedia.org/resource/'
@@ -29,7 +31,7 @@ sdmx_code = 'http://purl.org/linked-data/sdmx/2009/code#'
 SDMX = Namespace(sdmx_code)
 
 # Our repository url
-repo_url = "http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump"
+repo_url = "http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal"
 
 VOCAB_FILE = 'ontologies/the_migration_portal.ttl'
 SOURCE_DATA_DIR = '../source_datasets/'
@@ -46,8 +48,11 @@ def convert_unemployment_csv(path, dataset, graph_uri):
 
         for row in csv_contents[1:]:
             # Pre processing of the data + creation of triples
-            country = URIRef(to_iri(dbr + row['GEO'].strip()))
+ 	    country = URIRef(to_iri(dbr + row['GEO'].strip()))
             country_name = Literal(row['GEO'].strip(), datatype=XSD['string'])
+
+            #Fix Germany
+
 
             unemployment_rate = URIRef(to_iri(resource + 'Unemployment_rate' + str(enum)))
             try:
@@ -86,12 +91,14 @@ def convert_unemployment_csv(path, dataset, graph_uri):
             print 'Country : '+ country_name + ', in year ' + date + ', had unemployment rate : ' \
             + unemployment_value + ', for age group : '+ age_group + ', unit : ' + unit_value
 
+            unemployment_rate_label = Literal('Unemployment_rate_' + country_name + '_'+ date, datatype=XSD['string'])
 
             dataset.add((country, RDF.type, DBO['Country']))
             dataset.add((country, RDFS.label, country_name))
             dataset.add((country, VOCAB['unemployment_rate'], unemployment_rate))
 
             graph.add((unemployment_rate, RDF.type, VOCAB['Unemployment_rate']))
+            graph.add((unemployment_rate, RDFS.label, unemployment_rate_label))
             graph.add((unemployment_rate, VOCAB['gender'], gender))
             graph.add((unemployment_rate, VOCAB['indicator_value'], unemployment_value))
             graph.add((unemployment_rate, VOCAB['time_period'],date))
@@ -115,6 +122,7 @@ def convert_population_csv(path, dataset, graph_uri):
             country = URIRef(to_iri(dbr + row['GEO'].strip()))
             country_name = Literal(row['GEO'].strip(), datatype=XSD['string'])
             population = URIRef(to_iri(resource + 'Population' + str(enum)))
+            pop_type = Literal(row['CITIZEN'].strip(),datatype=XSD['string'])
             try:
                 gender = row['SEX'].strip()
                 gender = URIRef(to_iri(sdmx_code + 'Total'))
@@ -133,8 +141,8 @@ def convert_population_csv(path, dataset, graph_uri):
                 if temp == ':':
                     pass
                 else:
-                    population_value = Literal(temp, datatype= XSD['Integer'])
-            except Exception as e:
+                    population_value = Literal(temp, datatype= XSD['integer'])
+   	         except Exception as e:
                 population_value = Literal('N/A', datatype= XSD['string'])
 
             try:
@@ -145,14 +153,18 @@ def convert_population_csv(path, dataset, graph_uri):
             print 'Country : '+ country_name + ', in year ' + date + ', had population : ' \
             + population_value + ', for age group : '+ age_group
 
+            population_label = Literal('Population_' + country_name +'_'+ date, datatype=XSD['string'])
+
 
             dataset.add((country, RDF.type, DBO['Country']))
             dataset.add((country, RDFS.label, country_name))
             dataset.add((country, VOCAB['population'], population))
 
             graph.add((population, RDF.type, VOCAB['Population']))
+            graph.add((population, RDFS.label, population_label))
             graph.add((population, VOCAB['country'], country))
             graph.add((population, VOCAB['gender'], gender))
+            graph.add((population, VOCAB['population_type'], pop_type))
             graph.add((population, VOCAB['population_value'], population_value))
             graph.add((population, VOCAB['time_period'],date))
 
@@ -166,19 +178,19 @@ def convert_inflow_csv(path, dataset, graph_uri):
         csv_contents = csv_parser(filename)
         pd.read_csv("source_datasets/inflow_dataset.csv")
         enum = 0
-        graph_uri = URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/resource/inflow_graph')  # The URI for our graph
+        graph_uri = URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/resource/inflow_graph')  # The URI for our graph
         graph = dataset.graph(graph_uri)  # new graph object with our URI from the dataset
 
         for row in csv_contents[1:]:
             # Pre processing of the data + creation of triples
-            from_country_code = URIRef(to_iri(dbr + row['Code'].strip()))
+            from_country_code = URIRef(to_iri(geo_country_code + row['Code'].strip()+"/"))
 
             temp_from_country_name = row['Country of birth/nationality'].strip().replace(",","")
 
             from_country = URIRef(to_iri(dbr + temp_from_country_name))
             from_country_name = Literal(temp_from_country_name, datatype=XSD['string'])
 
-            to_counry_code = URIRef(to_iri(dbr + row['COU'].strip()))
+            to_counry_code = URIRef(to_iri(geo_country_code + row['COU'].strip()+"/"))
 
             temp_to_country_name = row['Country'].strip().replace(",","")
             to_country =  URIRef(to_iri(dbr + temp_to_country_name ))
@@ -216,7 +228,7 @@ def convert_inflow_csv(path, dataset, graph_uri):
 
             dataset.add((from_country, RDF.type, DBO['Country']))
             dataset.add((from_country, RDFS.label, from_country_name))
-            dataset.add((from_country, VOCAB['country_code'], from_country_code))
+            dataset.add((from_country, GCC['country_code'], from_country_code))
 
             graph.add((inflow, RDF.type, VOCAB['Inflow_of_population']))
 
@@ -275,14 +287,15 @@ def csv_parser(filename):
 graph_uri_base = resource
 
 path = 'source_datasets/'
-filename_population = 'population_eu.csv'
+filename_population = 'all_population_by_type.csv'
 filename_unemployment = 'unemployment_eu.csv'
 filename_inflow = 'inflow_dataset.csv'
 
 dataset = Dataset()
-dataset.bind('trumpres', RESOURCE)
-dataset.bind('trumpvoc', VOCAB)
+dataset.bind('mpr', RESOURCE)
+dataset.bind('mpo', VOCAB)
 dataset.bind('geo', GEO)
+dataset.bind('geo_country_code', GCC)
 dataset.bind('dbo', DBO)
 dataset.bind('dbr', DBR)
 dataset.bind('sdmx', SDMX)
