@@ -1,7 +1,5 @@
 import csv
 from csv import DictReader
-import numpy as np
-import pandas as pd
 from datetime import datetime
 import dateparser
 from rdflib import Dataset, Graph, URIRef, Literal, Namespace, RDF, RDFS, OWL, XSD
@@ -172,7 +170,6 @@ def convert_inflow_csv(path, dataset, graph_uri):
     filename = path
     with open(path,'r') as csvfile:
         csv_contents = csv_parser(filename)
-        pd.read_csv("source_datasets/inflow_dataset.csv")
         enum = 0
         graph_uri = URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/resource/inflow_graph')  # The URI for our graph
         graph = dataset.graph(graph_uri)  # new graph object with our URI from the dataset
@@ -238,6 +235,68 @@ def convert_inflow_csv(path, dataset, graph_uri):
 
     return dataset, graph
 
+def convert_asylum_csv(path, dataset, graph_uri):
+    filename = path
+    with open(path,'r') as csvfile:
+        country = URIRef(to_iri(dbr + 'Netherlands'))
+        csv_contents = csv_parser(filename)
+        enum = 0
+        graph_uri = URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/resource/asylum_graph')   # The URI for our graph
+        graph = dataset.graph(graph_uri)                                   # new graph object with our URI from the dataset
+
+        for row in csv_contents[1:]:
+            # Pre processing of the data + creation of triples
+            asylum_seeker = URIRef(to_iri(resource + 'Asylum_seekers ' + str(enum)))
+            try:
+                gender = row['Geslacht'].strip()
+                if gender == 'Vrouwen':
+                    gender = URIRef(to_iri(sdmx_code + 'sex-F'))
+                else:
+                    gender = URIRef(to_iri(sdmx_code + 'sex-M'))
+            except Exception as e:
+                gender =  Literal('N/A', datatype= XSD['string'])
+
+            try:
+                nationality_value = Literal(row['Nationaliteit'].strip(), lang = 'nl')
+                nationality = URIRef(to_iri(resource + nationality_value ))
+            except Exception as e:
+                nationality = Literal('N/A', datatype= XSD['string'])
+
+            #Preprocess dates
+            temp_date = row['Perioden']
+            date = temp_date.split()
+            year = date[0].strip()
+            month = date[1] if date[1] != '' else None
+
+            test = dateparser.parse(row['Perioden'], languages=['nl','en'])
+            if test.month/5 >= 2:
+                temp_date = str(test.year) +'-'+ str(test.month)
+            else:
+                temp_date = str(test.year) +'-'+'0'+str(test.month)
+
+            try:
+                date = Literal(temp_date,datatype=XSD['gYearMonth'])
+            except Exception as e:
+                date = Literal('N/A', datatype= XSD['string'])
+
+            try:
+                value = Literal(row['aantal'].strip(), datatype= XSD['int'])
+            except Exception as e:
+                value = Literal('N/A', datatype= XSD['string'])
+
+            dataset.add((country, RDF.type, VOCAB['Country']))
+            dataset.add((country, VOCAB['asylum_seekers'], asylum_seeker))
+
+            graph.add((asylum_seeker, VOCAB['gender'], gender))
+            graph.add((asylum_seeker, VOCAB['nationality'], nationality))
+            graph.add((asylum_seeker, VOCAB['application_country'],country))
+            graph.add((asylum_seeker, VOCAB['application_period'], date))
+            graph.add((asylum_seeker, VOCAB['value'], value))
+
+            enum += 1
+
+    return dataset, graph
+
 
 def upload_to_stardog(data,repo_url):
     transaction_begin_url = repo_url + "/transaction/begin"
@@ -286,6 +345,7 @@ path = 'source_datasets/'
 filename_population = 'all_population_by_type.csv'
 filename_unemployment = 'unemployment_eu.csv'
 filename_inflow = 'inflow_dataset.csv'
+filename_asylum = 'asylum_seekers.csv'
 
 dataset = Dataset()
 dataset.bind('mpr', RESOURCE)
@@ -304,6 +364,7 @@ dataset, population_eu_graph = convert_population_csv(filename_population,datase
 
 dataset, inflow_graph = convert_inflow_csv(filename_inflow,dataset,URIRef(graph_uri_base + 'inflow_graph'))
 
+dataset, asylum_graph = convert_asylum_csv(filename_asylum,dataset,URIRef(graph_uri_base + 'asylum_graph'))
 
 #serialize_upload(OUTPUT_DIR + 'merged_dataset_population_unemployment.trig',dataset)
 serialize_upload(OUTPUT_DIR + 'merged_dataset.trig',dataset)
