@@ -40,7 +40,6 @@ OUTPUT_DIR = 'data/'
 def convert_unemployment_csv(path, dataset, graph_uri):
     filename = path
     with open(path,'r') as csvfile:
-
         csv_contents = csv_parser(filename)
         enum = 0
         #graph_uri = URIRef('http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/trump/resource/unemployment_graph')  # The URI for our graph
@@ -48,12 +47,9 @@ def convert_unemployment_csv(path, dataset, graph_uri):
 
         for row in csv_contents[1:]:
             # Pre processing of the data + creation of triples
- 	    country = URIRef(to_iri(dbr + row['GEO'].strip()))
+            country = URIRef(to_iri(dbr + row['GEO'].strip()))
             country_name = Literal(row['GEO'].strip(), datatype=XSD['string'])
-
             #Fix Germany
-
-
             unemployment_rate = URIRef(to_iri(resource + 'Unemployment_rate' + str(enum)))
             try:
                 gender = row['SEX'].strip()
@@ -141,9 +137,9 @@ def convert_population_csv(path, dataset, graph_uri):
                 if temp == ':':
                     pass
                 else:
-                    population_value = Literal(temp, datatype= XSD['integer'])
-   	         except Exception as e:
-                population_value = Literal('N/A', datatype= XSD['string'])
+                    population_value = Literal(temp, datatype=XSD['int'])
+            except Exception as e:
+                population_value = Literal('N/A', datatype=XSD['string'])
 
             try:
                 age_group = Literal(row['AGE'].strip(), datatype = XSD['string'])
@@ -215,7 +211,7 @@ def convert_inflow_csv(path, dataset, graph_uri):
                 #print type(inflow_value)
                 if isinstance(inflow_value, int):
                 #    print "This number is an int"
-                    inflow_value = Literal(row['Value'].strip(), datatype= XSD['integer'])
+                    inflow_value = Literal(row['Value'].strip(), datatype= XSD['int'])
                 else:
                     #print "This number is a int"
                     inflow_value = Literal(inflow_value, datatype= XSD['float'])
