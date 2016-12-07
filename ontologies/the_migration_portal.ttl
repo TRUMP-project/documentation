@@ -1,0 +1,327 @@
+@prefix : <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal#> .
+@prefix mpo: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal> a owl:Ontology ;
+	owl:versionInfo "Version 1.1"@en ;
+	rdfs:comment "An example use-case of using semantic web technologies in migration studies."@en ;
+	rdfs:label "The migration portal ontology"@en .
+# 
+# 
+# #################################################################
+# #
+# #    Datatypes
+# #
+# #################################################################
+# 
+# 
+# http://www.w3.org/2001/XMLSchema#gYear
+
+xsd:gYear a rdfs:Datatype .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Object Properties
+# #
+# #################################################################
+# 
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/country_indicator
+
+mpo:country_indicator a owl:ObjectProperty ;
+	owl:inverseOf mpo:indicator_country ;
+	rdfs:domain <http://dbpedia.org/ontology/Country> ;
+	rdfs:range mpo:Country_indicator .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/from_country
+
+mpo:from_country a owl:ObjectProperty ;
+	rdfs:domain mpo:Movement_of_people ;
+	rdfs:range <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/indicator_country
+
+mpo:indicator_country a owl:ObjectProperty ;
+	rdfs:domain mpo:Country_indicator ;
+	rdfs:range <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/to_country
+
+mpo:to_country a owl:ObjectProperty ;
+	rdfs:domain mpo:Movement_of_people ;
+	rdfs:range <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/unemployment_rate
+
+mpo:unemployment_rate a owl:ObjectProperty ;
+	rdfs:domain <http://dbpedia.org/ontology/Country> ;
+	rdfs:range mpo:Unemployment_rate .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Data properties
+# #
+# #################################################################
+# 
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/country_code
+
+mpo:country_code a owl:DatatypeProperty ;
+	rdfs:domain <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/gender
+
+mpo:gender a owl:DatatypeProperty ;
+	rdfs:domain mpo:Movement_of_people , mpo:Unemployment_rate .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/indicator_value
+
+mpo:indicator_value a owl:DatatypeProperty ;
+	rdfs:domain mpo:Country_indicator ;
+	rdfs:range xsd:decimal .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/movement_time_period
+
+mpo:movement_time_period a owl:DatatypeProperty ;
+	rdfs:domain mpo:Movement_of_people ;
+	rdfs:range xsd:gYear .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/movement_value
+
+mpo:movement_value a owl:DatatypeProperty ;
+	rdfs:domain mpo:Movement_of_people ;
+	rdfs:range xsd:unsignedInt .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/population_type
+
+mpo:population_type a owl:DatatypeProperty ;
+	rdfs:domain mpo:Population ;
+	rdfs:range xsd:string .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/population_value
+
+mpo:population_value a owl:DatatypeProperty ;
+	rdfs:domain mpo:Population ;
+	rdfs:range xsd:nonNegativeInteger .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/time_period
+
+mpo:time_period a owl:DatatypeProperty ;
+	rdfs:domain mpo:Country_indicator ;
+	rdfs:range xsd:gYear .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/unit
+
+mpo:unit a owl:DatatypeProperty ;
+	rdfs:domain mpo:Unemployment_rate .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Classes
+# #
+# #################################################################
+# 
+# 
+# http://dbpedia.org/ontology/Country
+
+<http://dbpedia.org/ontology/Country> a owl:Class .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Country
+
+mpo:Country a owl:Class ;
+	rdfs:subClassOf <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Country_indicator
+
+mpo:Country_indicator a owl:Class ;
+	rdfs:comment "Different indicators that a country may have."@en ;
+	rdfs:label "The indicators of a Country"@en .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Demographic_indicators
+
+mpo:Demographic_indicators a owl:Class ;
+	rdfs:subClassOf mpo:Country_indicator .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Economic_indicators
+
+mpo:Economic_indicators a owl:Class ;
+	rdfs:subClassOf mpo:Country_indicator .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/ForeignBornPopulation
+
+mpo:ForeignBornPopulation a owl:Class ;
+	owl:equivalentClass _:genid1 .
+
+_:genid1 owl:intersectionOf _:genid4 .
+
+_:genid4 a rdf:List ;
+	rdf:first mpo:Population ;
+	rdf:rest _:genid2 .
+
+_:genid2 a rdf:List ;
+	rdf:first _:genid3 .
+
+_:genid3 a owl:Restriction ;
+	owl:onProperty mpo:population_type ;
+	owl:hasValue "Foreign country"^^xsd:string .
+
+_:genid2 rdf:rest rdf:nil .
+
+_:genid1 a owl:Class .
+
+mpo:ForeignBornPopulation rdfs:subClassOf mpo:Population ;
+	rdfs:comment "Total foreign population of country, by country of birth"@en .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Inflow_of_population
+
+mpo:Inflow_of_population a owl:Class ;
+	owl:equivalentClass _:genid5 .
+
+_:genid5 owl:intersectionOf _:genid14 .
+
+_:genid14 a rdf:List ;
+	rdf:first mpo:Movement_of_people ;
+	rdf:rest _:genid6 .
+
+_:genid6 a rdf:List ;
+	rdf:first _:genid7 .
+
+_:genid7 owl:intersectionOf _:genid12 .
+
+_:genid12 a rdf:List ;
+	rdf:first _:genid13 .
+
+_:genid13 a owl:Restriction ;
+	owl:onProperty mpo:from_country ;
+	owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+	owl:onClass <http://dbpedia.org/ontology/Country> .
+
+_:genid12 rdf:rest _:genid10 .
+
+_:genid10 a rdf:List ;
+	rdf:first _:genid11 .
+
+_:genid11 a owl:Restriction ;
+	owl:onProperty mpo:to_country ;
+	owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+	owl:onClass <http://dbpedia.org/ontology/Country> .
+
+_:genid10 rdf:rest _:genid8 .
+
+_:genid8 a rdf:List ;
+	rdf:first _:genid9 .
+
+_:genid9 a owl:Restriction ;
+	owl:onProperty mpo:movement_value ;
+	owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+	owl:onDataRange xsd:integer .
+
+_:genid8 rdf:rest rdf:nil .
+
+_:genid7 a owl:Class .
+
+_:genid6 rdf:rest rdf:nil .
+
+_:genid5 a owl:Class .
+
+mpo:Inflow_of_population rdfs:subClassOf mpo:Movement_of_people ;
+	rdfs:comment "The inflow of population from one country to another"@en .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Movement_of_people
+
+mpo:Movement_of_people a owl:Class .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/NativePopulation
+
+mpo:NativePopulation a owl:Class ;
+	owl:equivalentClass _:genid15 .
+
+_:genid15 owl:intersectionOf _:genid18 .
+
+_:genid18 a rdf:List ;
+	rdf:first mpo:Population ;
+	rdf:rest _:genid16 .
+
+_:genid16 a rdf:List ;
+	rdf:first _:genid17 .
+
+_:genid17 a owl:Restriction ;
+	owl:onProperty mpo:population_type ;
+	owl:hasValue "Reporting country"^^xsd:string .
+
+_:genid16 rdf:rest rdf:nil .
+
+_:genid15 a owl:Class .
+
+mpo:NativePopulation rdfs:subClassOf mpo:Population .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Population
+
+mpo:Population a owl:Class ;
+	owl:equivalentClass _:genid19 .
+
+_:genid19 owl:intersectionOf _:genid22 .
+
+_:genid22 a rdf:List ;
+	rdf:first mpo:Population ;
+	rdf:rest _:genid20 .
+
+_:genid20 a rdf:List ;
+	rdf:first _:genid21 .
+
+_:genid21 a owl:Restriction ;
+	owl:onProperty mpo:population_type ;
+	owl:hasValue "Total"^^xsd:string .
+
+_:genid20 rdf:rest rdf:nil .
+
+_:genid19 a owl:Class .
+
+mpo:Population rdfs:subClassOf mpo:Demographic_indicators ;
+	rdfs:comment "Total population of a country"@en .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Unemployment_rate
+
+mpo:Unemployment_rate a owl:Class ;
+	rdfs:subClassOf mpo:Economic_indicators .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Individuals
+# #
+# #################################################################
+# 
+# 
+# http://dbpedia.org/ontology/Austria
+
+<http://dbpedia.org/ontology/Austria> a owl:NamedIndividual , <http://dbpedia.org/ontology/Country> .
+# 
+# http://dbpedia.org/ontology/Greece
+
+<http://dbpedia.org/ontology/Greece> a owl:NamedIndividual , <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/greek_movement
+
+<http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/greek_movement> a owl:NamedIndividual , mpo:Movement_of_people ;
+	mpo:from_country <http://dbpedia.org/ontology/Greece> ;
+	mpo:to_country <http://dbpedia.org/ontology/Austria> ;
+	mpo:movement_value "1000"^^xsd:integer .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/population_germany
+
+<http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/population_germany> a owl:NamedIndividual , mpo:Population ;
+	mpo:population_type "Foreign country"^^xsd:string .
+# 
+# Generated by the OWL API (version 4.2.5.20160517-0735) https://github.com/owlcs/owlapi
