@@ -8,16 +8,19 @@ prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-PREFIX trumpvoc: <http://localhost:5820/test/vocab/>
-PREFIX trumpres: <http://localhost:5820/test/resources/>
+prefix mpo: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/>
+prefix mpr: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/resource/>
 
-select distinct ?asylum_seekers ?nationality ?label ?value ?date ?country
+select distinct ?asylum_seekers ?nationality ?value ?date ?country
 where { 
-	?asylum_seekers a trumpvoc:Asylum_seekers .
-  	?asylum_seekers trumpvoc:nationality ?nationality .
-  	?asylum_seekers trumpvoc:value ?value .
-  	?asylum_seekers trumpvoc:application_period ?date .
-  	?asylum_seekers trumpvoc:application_country ?country .		
-    FILTER(regex(str(?nationality), "Soedanees" ) )
-  
+  	          
+	graph mpr:asylum_graph{
+  	?asylum_seekers mpo:nationality ?nationality .
+  	?asylum_seekers mpo:value ?value .
+  	?asylum_seekers mpo:application_period ?date .
+  	?asylum_seekers mpo:application_country ?country .		
+  }
+  #Filter to choose nationality
+  FILTER(regex(str(?nationality), "Soedanees"))
+          
 }order by(?date)

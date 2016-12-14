@@ -1,4 +1,4 @@
-#+ This query returns groups of asylum seekers and their respected "attributes" filtered by nationality & gender, gender can be changed to female by changing the M to F (male to female).
+#+ This query returns groups of asylum seekers and their respected "attributes" filtered by gender and arrival year
 #+ endpoint: http://stardog.clariah-sdh.eculture.labs.vu.nl/the_migration_portal#!/query/
 #+ pagination: 100
 #+ method: GET
@@ -20,13 +20,13 @@ where {
   	          
 	graph mpr:asylum_graph{
   	?asylum_seekers mpo:nationality ?nationality ;
-  					mpo:value ?value ;
+  				mpo:value ?value ;
     				mpo:application_period ?date ;
-  					mpo:application_country ?country ;	
+  				mpo:application_country ?country ;	
     				mpo:gender ?gender . 
   }
-  #Filter to choose nationality
-    FILTER(regex(str(?nationality), "Afghaans" ))
-  	FILTER(?gender = sdmx:sex-M)
-          
+  	#Filter to choose gender & year
+	FILTER(?gender =sdmx:sex-F)
+	FILTER(regex(str(?date), "2014") || regex(str(?date), "2015")) 
+
 }order by(?date)
