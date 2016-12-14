@@ -110,7 +110,7 @@ mpo:population_type a owl:DatatypeProperty ;
 
 mpo:population_value a owl:DatatypeProperty ;
 	rdfs:domain mpo:Population ;
-	rdfs:range xsd:nonNegativeInteger .
+	rdfs:range xsd:integer .
 # 
 # http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/time_period
 
@@ -268,6 +268,12 @@ mpo:NativePopulation rdfs:subClassOf mpo:Population .
 # http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Population
 
 mpo:Population a owl:Class ;
+	rdfs:subClassOf mpo:Demographic_indicators ;
+	rdfs:comment "Total population of a country"@en .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/TotalPopulation
+
+mpo:TotalPopulation a owl:Class ;
 	owl:equivalentClass _:genid19 .
 
 _:genid19 owl:intersectionOf _:genid22 .
@@ -287,13 +293,36 @@ _:genid20 rdf:rest rdf:nil .
 
 _:genid19 a owl:Class .
 
-mpo:Population rdfs:subClassOf mpo:Demographic_indicators ;
-	rdfs:comment "Total population of a country"@en .
+mpo:TotalPopulation rdfs:subClassOf mpo:Population .
 # 
 # http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/Unemployment_rate
 
 mpo:Unemployment_rate a owl:Class ;
 	rdfs:subClassOf mpo:Economic_indicators .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/UnknownPopulation
+
+mpo:UnknownPopulation a owl:Class ;
+	owl:equivalentClass _:genid23 .
+
+_:genid23 owl:intersectionOf _:genid26 .
+
+_:genid26 a rdf:List ;
+	rdf:first mpo:Population ;
+	rdf:rest _:genid24 .
+
+_:genid24 a rdf:List ;
+	rdf:first _:genid25 .
+
+_:genid25 a owl:Restriction ;
+	owl:onProperty mpo:population_type ;
+	owl:hasValue "Unknown"^^xsd:string .
+
+_:genid24 rdf:rest rdf:nil .
+
+_:genid23 a owl:Class .
+
+mpo:UnknownPopulation rdfs:subClassOf mpo:Population .
 # 
 # 
 # 
@@ -311,6 +340,16 @@ mpo:Unemployment_rate a owl:Class ;
 # http://dbpedia.org/ontology/Greece
 
 <http://dbpedia.org/ontology/Greece> a owl:NamedIndividual , <http://dbpedia.org/ontology/Country> .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/a2
+
+<http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/a2> a owl:NamedIndividual , mpo:Population ;
+	mpo:population_type "Total"^^xsd:string .
+# 
+# http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/aa
+
+<http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/aa> a owl:NamedIndividual , mpo:Population ;
+	mpo:population_type "Unknown"^^xsd:string .
 # 
 # http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/greek_movement
 
