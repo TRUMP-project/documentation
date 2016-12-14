@@ -1,0 +1,28 @@
+#+ This query returns inflows of population from and to country sorted by time period 
+#+ endpoint: http://stardog.clariah-sdh.eculture.labs.vu.nl/the_migration_portal#!/query/
+#+ pagination: 100
+#+ method: GET
+
+﻿prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+prefix mpo: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/vocab/>
+prefix mpr: <http://stardog.clariah-sdh.eculture.labs.vu.nl/databases/the_migration_portal/resource/>
+prefix sdmx: <http://purl.org/linked-data/sdmx/2009/code#>
+prefix dbr: <http://dbpedia.org/resource/>
+prefix dbo: <http://dbpedia.org/ontology/>
+
+select distinct ?From_Country ?To_Country ?Value ?Time_period
+where { 
+ 	graph mpr:inflow_graph{
+    ?Inflow a mpo:Inflow_of_population ;
+	 	mpo:from_country ?From_Country ;
+        	mpo:movement_time_period ?Time_period ;
+        	mpo:movement_value ?Value ;
+        	mpo:to_country ?To_Country .
+
+}
+	
+}order by(?Time_period)
