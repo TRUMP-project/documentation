@@ -1,2 +1,0 @@
-http://stardog.clariah-sdh.eculture.labs.vu.nl/test/query/
-http://stardog.clariah-sdh.eculture.labs.vu.nl/test#!/query
